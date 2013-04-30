@@ -225,7 +225,7 @@ MainWindow::MainWindow( QWidget *parent ) : QMainWindow(parent), _ui(new Ui::Mai
 	QObject::connect(_ui->_buttonNextMaximum, SIGNAL(clicked()), this, SLOT(nextMaximumInSliceHistogram()));
 	QObject::connect(_ui->_buttonUpdateSliceHistogram, SIGNAL(clicked()), this, SLOT(updateSliceHistogram()));
 	// Onglet "4. Contours"
-	QObject::connect(_ui->_sliderContour, SIGNAL(valueChanged(int)), this, SLOT(moveContourCursor(int)));
+	QObject::connect(_ui->_sliderContour, SIGNAL(sliderMoved(int)), this, SLOT(moveContourCursor(int)));
 
 	/*******************
 	* Évènements du zoom
@@ -507,6 +507,7 @@ void MainWindow::drawSlice()
 
 void MainWindow::setSlice( const int &sliceNumber )
 {
+  
 	_currentSlice = sliceNumber;
 	_ui->_labelSliceNumber->setNum(sliceNumber);
 
@@ -540,13 +541,20 @@ void MainWindow::moveNearestPointsCursor( const int &position )
 
 void MainWindow::moveContourCursor( const int &position )
 {
-	if ( !_contourBillon->isEmpty() && _sliceHistogram->interval(_ui->_comboSelectSliceInterval->currentIndex()-1).containsClosed(_currentSlice) )
+  if(position==-1){
+    std::cerr << "Warning invalid position in moveContourCursor (-1)" << std::endl;
+    return;
+  }
+  
+
+
+  if (_contourBillon->contourSlice(_currentSlice- _sliceHistogram->interval(_ui->_comboSelectSliceInterval->currentIndex()-1).min()).curvatureHistogram().size() >0 &&  !_contourBillon->isEmpty() && _sliceHistogram->interval(_ui->_comboSelectSliceInterval->currentIndex()-1).containsClosed(_currentSlice))
 	{
-		_plotCurvatureHistogram->moveCursor(position);
-		_ui->_plotCurvatureHistogram->replot();
-		_plotContourDistancesHistogram->moveCursor(position);
-		_ui->_plotContourDistancesHistogram->replot();
-		drawSlice();
+	  _plotCurvatureHistogram->moveCursor(position);
+	  _ui->_plotCurvatureHistogram->replot();
+	  _plotContourDistancesHistogram->moveCursor(position);
+	  _ui->_plotContourDistancesHistogram->replot();
+	  drawSlice();
 	}
 }
 
@@ -624,8 +632,9 @@ void MainWindow::updateSliceHistogram()
 
 void MainWindow::updateContourHistograms( const int &sliceNumber )
 {
+  //std::cerr << "min=" << _ui->_sliderContour->minimum()  << "max " << _ui->_sliderContour->maximum() << "min" <<  _ui->_sliderContour->value() << std::endl ;
+	_ui->_sliderContour->setMaximum(1);
 	_ui->_sliderContour->setValue(0);
-	_ui->_sliderContour->setMaximum(0);
 	_plotCurvatureHistogram->clear();
 	_plotContourDistancesHistogram->clear();
 	const int sliceIntervalIndex = _ui->_comboSelectSliceInterval->currentIndex();
@@ -641,7 +650,9 @@ void MainWindow::updateContourHistograms( const int &sliceNumber )
 
 			_plotContourDistancesHistogram->update(contourSlice.contourDistancesHistogram(),contourSlice.dominantPointIndexFromLeft(),contourSlice.dominantPointIndexFromRight());
 			_ui->_plotContourDistancesHistogram->setAxisScale(QwtPlot::xBottom,0,contourSlice.contourDistancesHistogram().size());
-
+			if(contourSlice.contour().size()==0){
+			  _ui->_sliderContour->setMaximum(0);
+			}
 			_ui->_sliderContour->setMaximum(contourSlice.contour().size()-1);
 			moveContourCursor(0);
 		}
@@ -747,6 +758,7 @@ void MainWindow::dragInSliceView( const QPoint &movementVector )
 
 void MainWindow::selectSliceInterval( const int &index )
 {
+
 	if ( _componentBillon )
 	{
 		delete _componentBillon;
@@ -795,6 +807,7 @@ void MainWindow::selectCurrentSliceInterval()
 
 void MainWindow::selectSectorInterval(const int &index, const bool &draw )
 {
+
 	if ( _componentBillon )
 	{
 		delete _componentBillon;

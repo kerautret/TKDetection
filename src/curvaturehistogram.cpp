@@ -52,7 +52,7 @@ void CurvatureHistogram::construct( const Contour &contour, const int &curvature
 		QProcess curvatureExtraction;
 		curvatureExtraction.setStandardInputFile(fileContours.fileName());
 		curvatureExtraction.setStandardOutputFile(fileCurvature.fileName());
-		curvatureExtraction.start(QString("curvature_gmcb -setWidth %1").arg(curvatureWidth));
+        curvatureExtraction.start(QString("/usr/local/bin/curvature_gmcb -setWidth %1").arg(curvatureWidth));
 
 		if ( curvatureExtraction.waitForFinished(3000) )
 		{
@@ -72,6 +72,8 @@ void CurvatureHistogram::construct( const Contour &contour, const int &curvature
 			}
 
 			fileCurvature.close();
-		}
-	}
+        }
+    }else{
+        qDebug() << QObject::tr("contour empty");
+    }
 }

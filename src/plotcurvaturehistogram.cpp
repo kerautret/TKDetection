@@ -1,5 +1,5 @@
 #include "inc/plotcurvaturehistogram.h"
-
+#include <iostream>
 #include "inc/curvaturehistogram.h"
 
 PlotCurvatureHistogram::PlotCurvatureHistogram()
@@ -40,11 +40,11 @@ void PlotCurvatureHistogram::clear()
 
 void PlotCurvatureHistogram::moveCursor( const uint &sliceIndex )
 {
-	static QVector<QwtIntervalSample> datasCursor(1);
-	static QwtIntervalSample &datasCursorInterval = datasCursor[0];
-	datasCursorInterval.interval.setInterval(sliceIndex,sliceIndex+1);
-	datasCursorInterval.value = _histogramData.sample(sliceIndex).value;
-	_histogramCursor.setSamples(datasCursor);
+    static QVector<QwtIntervalSample> datasCursor(1);
+    static QwtIntervalSample &datasCursorInterval = datasCursor[0];
+    datasCursorInterval.interval.setInterval(sliceIndex,sliceIndex+1);
+    datasCursorInterval.value = _histogramData.sample(sliceIndex).value;
+    _histogramCursor.setSamples(datasCursor);
 }
 
 void PlotCurvatureHistogram::update( const CurvatureHistogram & histogram, const QVector<int> &dominantPointsIndexFromLeft , const QVector<int> &dominantPointsIndexFromRight )
