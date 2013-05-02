@@ -545,12 +545,14 @@ void MainWindow::moveContourCursor( const int &position )
 	{
 		return;
 	}
-
+	if (_contourBillon->contourSlice(_currentSlice- _sliceHistogram->interval(_ui->_comboSelectSliceInterval->currentIndex()-1).min()).curvatureHistogram().size() >0 &&  !_contourBillon->isEmpty() && _sliceHistogram->interval(_ui->_comboSelectSliceInterval->currentIndex()-1).containsClosed(_currentSlice))
+   {
 	_plotCurvatureHistogram->moveCursor(position);
 	_ui->_plotCurvatureHistogram->replot();
 	_plotContourDistancesHistogram->moveCursor(position);
 	_ui->_plotContourDistancesHistogram->replot();
 	drawSlice();
+   }
 }
 
 void MainWindow::setTypeOfView( const int &type )
