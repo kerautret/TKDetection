@@ -128,13 +128,13 @@ void PieChart::draw( QImage &image, const uiCoord2D &center, const QVector< Inte
 		const int &width = image.width();
 		const int &height = image.height();
 
-        static QVector<QColor> colors(0);
-        colors.append( Qt::blue);
-        colors.append(Qt::yellow);
-        colors.append(Qt::green);
-        colors.append(Qt::magenta);
-        colors.append(Qt::cyan);
-        colors.append(Qt::white);
+                QVector<QColor> colors(0);
+                colors.append( Qt::blue);
+                colors.append(Qt::yellow);
+                colors.append(Qt::green);
+                colors.append(Qt::magenta);
+                colors.append(Qt::cyan);
+                colors.append(Qt::white);
 
 		const int nbColorsToUse = qMax( angleIntervals.size()>colors.size() ? ((angleIntervals.size()+1)/2)%colors.size() : colors.size() , 1 );
 

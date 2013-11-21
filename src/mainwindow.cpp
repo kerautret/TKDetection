@@ -472,7 +472,7 @@ void MainWindow::drawTangentialView()
 
 		if ( projectionType == TKD::Z_PROJECTION )
 		{
-            static  QVector<QColor> colors(0) ;
+                  QVector<QColor> colors(0) ;
                   colors.append( Qt::blue);
                   colors.append( Qt::green);
                   colors.append( Qt::cyan);
