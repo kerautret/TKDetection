@@ -119,18 +119,26 @@ namespace BillonAlgorithms
 		const qreal alpha = PI_ON_TWO;
 		const qreal cosAlpha = qCos(alpha);
 		const qreal sinAlpha = qSin(alpha);
-		const arma::Mat<qreal>::fixed<3,3> rotationMatY = { cosAlpha, 0, -sinAlpha, 0, 1, 0, sinAlpha, 0, cosAlpha };
+		arma::Mat<qreal>::fixed<3,3> rotationMatY;
+                rotationMatY << cosAlpha <<  0 << -sinAlpha << arma::endr
+                             << 0  << 1  << 0 << arma::endr
+                             << sinAlpha  << 0<< cosAlpha << arma::endr;
 
 		// Rotation selon l'angle de la zone de nœuds
-		const arma::Mat<qreal>::fixed<3,3> rotationMatX = { 1, 0, 0, 0, cosBisector, -sinBisector, 0, sinBisector, cosBisector };
+		 arma::Mat<qreal>::fixed<3,3> rotationMatX;
+                rotationMatX <<  1 <<   0 <<   0 << arma::endr
+                             << 0 << cosBisector <<   -sinBisector<< arma::endr
+                             << 0 << sinBisector <<  cosBisector << arma::endr;
 
 		const arma::Mat<qreal>::fixed<3,3> rotationMat = rotationMatY*rotationMatX;
 
 		// Vecteur de déplacement entre deux coupes tangentielles successives
-		const arma::Col<qreal>::fixed<3> shiftStep = { 0., 0., depth/(1.*nbSlices) };
+		arma::Col<qreal>::fixed<3> shiftStep;
+                shiftStep <<  0. <<   0. <<  depth/(1.*nbSlices) << arma::endr;
 		const arma::Col<qreal>::fixed<3> originShift = rotationMat * shiftStep;
 
-		arma::Col<qreal>::fixed<3> origin = { originPith.x, originPith.y, zPithCoord };
+		arma::Col<qreal>::fixed<3> origin;
+                origin << originPith.x <<   originPith.y <<   zPithCoord << arma::endr;
 		arma::Col<qreal>::fixed<3> initial, destination;
 		initial(2) = 0.;
 
