@@ -10,7 +10,7 @@
 
 # Version d'ITK installée : itk3 | itk4
 ITK_VERSION = itk4
-ITK_NUMBER =  4.4
+ITK_NUMBER =  4.5
 
 
 #                                                                #
@@ -41,30 +41,24 @@ TRANSLATIONS = TKDetection_en.ts
 #---------#
 SOURCES	=	src/main.cpp \
 			src/billonalgorithms.cpp \
-			src/concavitypointseriecurve.cpp \
 			src/connexcomponentextractor.cpp \
-			src/contour.cpp \
-			src/contourbillon.cpp \
-			src/contourdistanceshistogram.cpp \
-			src/contourslice.cpp \
-			src/curvaturehistogram.cpp \
 			src/dicomreader.cpp \
+			src/ellipticalaccumulationhistogram.cpp \
 			src/globalfunctions.cpp \
-			src/intensitydistributionhistogram.cpp \
-			src/nearestpointshistogram.cpp \
+			src/knotellipseradiihistogram.cpp \
+			src/knotpithprofile.cpp \
+			src/lowess.cpp \
 			src/mainwindow.cpp \
 			src/ofsexport.cpp \
-			src/opticalflow.cpp \
 			src/pgm3dexport.cpp \
 			src/piechart.cpp \
 			src/piepart.cpp \
 			src/pith.cpp \
 			src/pithextractor.cpp \
-			src/plotconcavitypointseriecurve.cpp \
-			src/plotcontourdistanceshistogram.cpp \
-			src/plotcurvaturehistogram.cpp \
-			src/plotintensitydistributionhistogram.cpp \
-			src/plotnearestpointshistogram.cpp \
+			src/pithextractorboukadida.cpp \
+			src/plotellipticalaccumulationhistogram.cpp \
+			src/plotknotellipseradiihistogram.cpp \
+			src/plotknotpithprofile.cpp \
 			src/plotsectorhistogram.cpp \
 			src/plotslicehistogram.cpp \
 			src/pointpolarseriesdata.cpp \
@@ -73,43 +67,38 @@ SOURCES	=	src/main.cpp \
 			src/slicehistogram.cpp \
 			src/sliceview.cpp \
 			src/slicezoomer.cpp \
+			src/tangentialtransform.cpp \
 			tst/test_intervalshistogram.cpp \
 			src/tiffreader.cpp \
 			src/v3dexport.cpp \
 
 HEADERS	=	inc/billon.h \
 			inc/billonalgorithms.h \
-			inc/concavitypointseriecurve.h \
 			inc/connexcomponentextractor.h \
-			inc/contour.h \
-			inc/contourbillon.h \
-			inc/contourdistanceshistogram.h \
-			inc/contourslice.h \
 			inc/coordinate.h \
-			inc/curvaturehistogram.h \
 			inc/define.h \
 			def/def_billon.h \
 			def/def_coordinate.h \
 			def/def_opticalflow.h \
 			inc/dicomreader.h \
+			inc/ellipticalaccumulationhistogram.h \
 			inc/globalfunctions.h \
 			inc/histogram.h \
-			inc/intensitydistributionhistogram.h \
 			inc/interval.h \
-			inc/nearestpointshistogram.h \
+			inc/knotellipseradiihistogram.h \
+			inc/knotpithprofile.h \
+			inc/lowess.h \
 			inc/mainwindow.h \
 			inc/ofsexport.h \
-			inc/opticalflow.h \
 			inc/pgm3dexport.h \
 			inc/piepart.h \
 			inc/piechart.h \
 			inc/pith.h \
 			inc/pithextractor.h \
-			inc/plotconcavitypointseriecurve.h \
-			inc/plotcontourdistanceshistogram.h \
-			inc/plotcurvaturehistogram.h \
-			inc/plotintensitydistributionhistogram.h \
-			inc/plotnearestpointshistogram.h \
+			inc/pithextractorboukadida.h \
+			inc/plotellipticalaccumulationhistogram.h \
+			inc/plotknotellipseradiihistogram.h \
+			inc/plotknotpithprofile.h \
 			inc/plotsectorhistogram.h \
 			inc/plotslicehistogram.h \
 			inc/pointpolarseriesdata.h \
@@ -119,6 +108,7 @@ HEADERS	=	inc/billon.h \
 			inc/sliceview.h \
 			inc/slicezoomer.h \
 			tst/test_intervalshistogram.h \
+			inc/tangentialtransform.h \
 			inc/tiffreader.h \
 			inc/v3dexport.h \
 
@@ -126,7 +116,7 @@ FORMS =	ui/mainwindow.ui
 
 # Directives compilateur
 #-----------------------#
-CXXFLAGS *= -std=c++0x
+QMAKE_CXXFLAGS *= -std=c++0x
 macx:QMAKE_CC=/usr/bin/gcc
 macx:QMAKE_CXX=/usr/bin/g++
 
@@ -137,7 +127,7 @@ INCLUDEPATH *=	/usr/include/ /usr/local/include/
 
 QMAKE_LIBDIR *=	/usr/local/lib/
 
-LIBS *= -lblas -llapack -larmadillo   -lDGtal -lDGtalIO
+LIBS *= -larmadillo -lgsl -lgslcblas
 
 # ITK
 #----#

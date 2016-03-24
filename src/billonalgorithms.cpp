@@ -1,6 +1,9 @@
 #include "inc/billonalgorithms.h"
 
 #include "inc/billon.h"
+#include "inc/piechart.h"
+
+#include <QQuaternion>
 
 namespace BillonAlgorithms
 {
@@ -8,37 +11,36 @@ namespace BillonAlgorithms
 	{
 		Q_ASSERT_X( nbDirections>0 , "BillonTpl<T>::getRestrictedAreaMeansRadius", "nbPolygonPoints arguments equals to 0 => division by zero" );
 
-		qreal radius = billon.n_cols/2.;
-		if ( billon.hasPith() )
+		if ( !billon.hasPith() )
+			return 1;
+
+		const int &width = billon.n_cols;
+		const int &height = billon.n_rows;
+		const int depth = billon.n_slices-nbSlicesToIgnore;
+		const qreal angleIncrement = TWO_PI/static_cast<qreal>(nbDirections);
+
+		rCoord2D center, edge;
+		rVec2D direction;
+		qreal orientation, currentNorm;
+
+		qreal radius = width;
+		for ( int k=nbSlicesToIgnore ; k<depth ; ++k )
 		{
-			const int width = billon.n_cols;
-			const int height = billon.n_rows;
-			const int depth = billon.n_slices-nbSlicesToIgnore;
-			const qreal angleIncrement = TWO_PI/static_cast<qreal>(nbDirections);
-
-			rCoord2D center, edge;
-			rVec2D direction;
-			qreal orientation, currentNorm;
-
-			radius = width;
-			for ( int k=nbSlicesToIgnore ; k<depth ; ++k )
+			const Slice &currentSlice = billon.slice(k);
+			center.x = billon.pithCoord(k).x;
+			center.y = billon.pithCoord(k).y;
+			orientation = angleIncrement;
+			while (orientation < TWO_PI)
 			{
-				const Slice &currentSlice = billon.slice(k);
-				center.x = billon.pithCoord(k).x;
-				center.y = billon.pithCoord(k).y;
-				orientation = angleIncrement;
-				while (orientation < TWO_PI)
+				orientation += angleIncrement;
+				direction = rVec2D(qCos(orientation),qSin(orientation));
+				edge = center + direction*minimumRadius;
+				while ( edge.x>0 && edge.y>0 && edge.x<width && edge.y<height && currentSlice(edge.y,edge.x) > intensityThreshold )
 				{
-					orientation += angleIncrement;
-					direction = rVec2D(qCos(orientation),qSin(orientation));
-					edge = center + direction*minimumRadius;
-					while ( edge.x>0 && edge.y>0 && edge.x<width && edge.y<height && currentSlice.at(edge.y,edge.x) > intensityThreshold )
-					{
-						edge += direction;
-					}
-					currentNorm = rVec2D(edge-center).norm();
-					if ( currentNorm < radius ) radius = currentNorm;
+					edge += direction;
 				}
+				currentNorm = rVec2D(edge-center).norm();
+				if ( currentNorm < radius ) radius = currentNorm;
 			}
 		}
 		qDebug() << "Rayon de la boite englobante (en pixels) : " << radius;
@@ -69,7 +71,7 @@ namespace BillonAlgorithms
 					orientation += angleIncrement;
 					direction = rVec2D(qCos(orientation),qSin(orientation));
 					edge = center + direction*30;
-					while ( edge.x>0. && edge.y>0. && edge.x<width && edge.y<height && currentSlice.at(edge.y,edge.x) >= intensityThreshold )
+					while ( edge.x>0. && edge.y>0. && edge.x<width && edge.y<height && currentSlice(edge.y,edge.x) >= intensityThreshold )
 					{
 						edge += direction;
 					}
@@ -79,4 +81,5 @@ namespace BillonAlgorithms
 		}
 		return vectAllVertex;
 	}
+
 }

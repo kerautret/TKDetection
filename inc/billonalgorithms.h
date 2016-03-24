@@ -3,7 +3,6 @@
 
 #include "def/def_billon.h"
 #include "def/def_coordinate.h"
-//#include "inc/coordinate.h"
 
 template <typename T> class Interval;
 template <typename T> class QVector;
